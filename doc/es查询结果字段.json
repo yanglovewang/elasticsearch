@@ -1,0 +1,58 @@
+{
+  "took" : 1,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 3,
+      "relation" : "eq"
+    },
+    "max_score" : 0.13353139,
+    "hits" : [
+      {
+        "_index" : "province",
+        "_type" : "_doc",
+        "_id" : "11",
+        "_score" : 0.13353139,
+        "_source" : {
+          "_class" : "org.spring.springboot.domain.City",
+          "id" : 11,
+          "name" : "zhang",
+          "description" : "description",
+          "score" : 29
+        }
+      },
+      {
+        "_index" : "province",
+        "_type" : "_doc",
+        "_id" : "13",
+        "_score" : 0.13353139,
+        "_source" : {
+          "_class" : "org.spring.springboot.domain.City",
+          "id" : 13,
+          "name" : "zhang",
+          "description" : "description",
+          "score" : 20
+        }
+      },
+      {
+        "_index" : "province",
+        "_type" : "_doc",
+        "_id" : "15",
+        "_score" : 0.13353139,
+        "_source" : {
+          "_class" : "org.spring.springboot.domain.City",
+          "id" : 15,
+          "name" : "zhang",
+          "description" : "description",
+          "score" : 20
+        }
+      }
+    ]
+  }
+}

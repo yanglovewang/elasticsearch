@@ -1,0 +1,43 @@
+# 默认maping支持dynamic 写入文档中加入新字段
+PUT dynamic_mapping_test/_doc/1
+  {
+    "firstName":"Chan",
+    "lastName": "jackie",
+    "loginDate": "2018-07-24T10:28:50.103Z"
+  }
+
+  # 查看mapping状态
+GET dynamic_mapping_test/_mapping
+
+# 搜索字段
+POST dynamic_mapping_test/_search
+ {
+   "query": {
+     "match": {
+       "lastName": "jackie"
+     }
+   }
+ }
+
+ # 设置dynamic为false
+PUT dynamic_mapping_test/_mapping
+{
+  "dynamic": false
+}
+
+# 添加一个字段，存在_source 中 但是不能被索引
+PUT dynamic_mapping_test/_doc/10
+{
+  "other":"value"
+}
+
+#  "dynamic": false 新增的字段索引不到
+GET dynamic_mapping_test/_search
+{
+  "query": {
+    "match": {
+      "other": "value"
+    }
+  }
+}
+

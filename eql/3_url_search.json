@@ -1,0 +1,85 @@
+# 通过 URL 的参数查询
+
+# 使用_bulk批量插入文档,初始化数据
+POST _bulk
+{ "index" : { "_index" : "student", "_id" : "1" } }
+{ "name" : "张三" }
+{ "index" : { "_index" : "student", "_id" : "2" } }
+{ "name" : "李四", "age": 10 , "desc":"student li si"}
+{ "index" : { "_index" : "student", "_id" : "3" } }
+{ "name" : "王 五", "age": 11, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "4" } }
+{ "name" : "q", "age": 11 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "5" } }
+{ "name" : "wang", "age": 11 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "6" } }
+{ "name" : "wang tian", "age": 11, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "7" } }
+{ "name" : "tian", "age": 11, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "8" } }
+{ "name" : "wangtian", "age": 11, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "10" } }
+{ "name" : "wangwang1", "age": 11 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "11" } }
+{ "name" : "wangwang2", "age": 9 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "12" } }
+{ "name" : "wangwang3", "age": 8 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "13" } }
+{ "name" : "wangwang4", "age": 7 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "14" } }
+{ "name" : "wang zhang tian", "age": 7, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "15" } }
+{ "name" : "wang zhang li tian", "age": 7 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "15" } }
+{ "name" : "tian li zhang wang", "age": 7 , "desc":"student wang"}
+
+# 批量查询
+GET /_mget
+{
+  "docs":[
+    {
+      "_index":"student",
+      "_id": "1"
+    },
+    {
+      "_index":"testindex1"
+      
+    }
+    ]
+}
+
+# url查询 profile : true 表示查询是怎么执行的
+GET /student/_search?df=name&q=王五
+{
+  "profile": "true"
+}
+
+# 泛查询 正对_all 所有字段DisjunctionMaxQuery
+GET /student/_search?q=11
+{
+  "profile": "true"
+}
+
+# 特定字段查询 PointRangeQuery
+GET /student/_search?q=age:11
+{
+  "profile": "true"
+}
+
+
+# PhraseQuery 查询条件出现 wang AND tian
+GET /student/_search?q=name:"wang tian"
+{
+  "profile": "true"
+}
+
+# DisjunctionMaxQuery wang OR tian
+GET /student/_search?q=name:wang tian
+{
+  "profile": "true"
+}
+
+GET /student/_search?q=name:wang %ian
+{
+  "profile": "true"
+}

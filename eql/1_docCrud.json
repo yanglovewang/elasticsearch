@@ -1,0 +1,37 @@
+# 用于演示文档操作的索引
+PUT doc_index
+GET doc_index
+
+# 指定 id 创建一个文档
+PUT doc_index/_create/1
+{
+  "firstname": "zhang",
+  "lastname": "xiao xiao",
+  "age": 23,
+  "tags":["sing", "dance", "eat"],
+  "worked": true
+}
+# 获取文档
+GET doc_index/_doc/1
+
+# index 文档就是不用_create 如果文档不存在就索引新的文档如果存在就删除原有文档，新文档被索引，版本号加1
+PUT doc_index/_doc/1
+{
+  "firstname": "zhang",
+  "lastname": "xiao ming",
+  "age": 23,
+  "tags":["sing", "dance", "eat"],
+  "worked": true
+}
+
+# 更新文档，不会删除文档真正意义上的更新
+POST doc_index/_doc/1
+{
+  "firstname": "zhang",
+  "lastname": "xiao 明",
+  "age": 23,
+  "tags":["sing", "dance", "eat"],
+  "worked": true
+}
+
+DELETE doc_index/_doc/1

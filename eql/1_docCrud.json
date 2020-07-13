@@ -24,7 +24,17 @@ PUT doc_index/_doc/1
   "worked": true
 }
 
-# 更新文档，不会删除文档真正意义上的更新
+# 随机生成ID 使用post
+POST doc_index/_doc
+{
+  "firstname": "uuid id",
+  "lastname": "xiao",
+  "age": 23,
+  "tags":["sing", "dance", "eat"],
+  "worked": true
+}
+
+# 更新文档，不会删除文档真正意义上的更新 使用 psot
 POST doc_index/_doc/1
 {
   "firstname": "zhang",
@@ -35,3 +45,5 @@ POST doc_index/_doc/1
 }
 
 DELETE doc_index/_doc/1
+# 获取文档
+GET doc_index/_doc/1

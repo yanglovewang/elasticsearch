@@ -1,0 +1,129 @@
+DELETE products
+PUT products
+{
+  "settings": {
+    "number_of_shards": 1
+  }
+}
+
+
+POST /products/_bulk
+{ "index": { "_id": 1 }}
+{ "productID" : "XHDK-A-1293-#fJ3","desc":"iPhone" }
+{ "index": { "_id": 2 }}
+{ "productID" : "KDKE-B-9947-#kL5","desc":"iPad" }
+{ "index": { "_id": 3 }}
+{ "productID" : "JODL-X-1937-#pV7","desc":"MBP" }
+
+GET /products
+
+# iPhone 查不到，标准分词器会把大写改成小写进行索引，但是用term搜索又不走分词
+POST /products/_search
+{
+  "query": {
+    "term": {
+      "desc": {
+        "value": "iPhone"
+        //"value":"iphone"
+      }
+    }
+  }
+}
+
+# es 提供了一个keyword 子字段 对查询进行了分词处理
+POST /products/_search
+{
+  "query": {
+    "term": {
+      "desc.keyword": {
+        "value": "iPhone"
+        //"value":"iphone"
+      }
+    }
+  }
+}
+
+# 和上面一样是查不到的
+POST /products/_search
+{
+  "query": {
+    "term": {
+      "productID": {
+        "value": "XHDK-A-1293-#fJ3"
+      }
+    }
+  }
+}
+
+# 用标准分词器查询看一下
+GET _analyze
+{
+  "analyzer": "standard",
+  "text": "XHDK-A-1293-#fJ3"
+}
+
+# 可以通过keyword 查询使用全文匹配
+POST /products/_search
+{
+  //"explain": true,
+  "query": {
+    "term": {
+      "productID.keyword": {
+        "value": "XHDK-A-1293-#fJ3"
+      }
+    }
+  }
+}
+
+# 跳过算分结果，提升性能
+POST /products/_search
+{
+  "explain": true,
+  "query": {
+    "constant_score": {
+      "filter": {
+        "term": {
+          "productID.keyword": "XHDK-A-1293-#fJ3"
+        }
+      }
+
+    }
+  }
+}
+
+
+#设置 position_increment_gap 设置临近数组中间的偏移
+DELETE groups
+PUT groups
+{
+  "mappings": {
+    "properties": {
+      "names":{
+        "type": "text",
+        "position_increment_gap": 10
+      }
+    }
+  }
+}
+
+GET groups/_mapping
+
+POST groups/_doc/1
+{
+  "names": [ "John Water", "Water Smith"]
+}
+GET groups/_doc/1
+
+# 我们用的是 match_phrase 按道理是查不到的
+POST groups/_search
+{
+  "query": {
+    "match_phrase": {
+      "names": {
+        "query": "Water Water"
+        , "slop": 10
+      }
+    }
+  }
+}
+

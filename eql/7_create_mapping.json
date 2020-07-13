@@ -1,0 +1,89 @@
+# 先创建一个索引插入数据
+PUT create_temp_mapping/_doc/1
+{
+  "firstname":"zhang",
+  "lastname":"xiaoxiao",
+  "age": 23,
+  "worked": true,
+  "desc": "is a student"
+  
+}
+
+# 获取索引, 根据索引信息修改成你自己的东西
+GET create_temp_mapping/_mapping
+
+##### 为一个索引定义一个mapping
+# mobile 不索引
+PUT user
+  {
+    "mappings": {
+      "properties": {
+        "firstName":{
+          "type": "text"
+        },
+        "lastName":{
+          "type": "text"
+        },
+        "mobile":{
+          "type": "text",
+          "index": false
+        }
+      }
+    }
+  }
+
+  PUT user/_doc/1
+  {
+    "firstName":"Chan",
+    "lastName": "jackie",
+    "mobile": "12345678"
+  }
+
+  # 不可以利用 mobile搜索
+  GET user/_search
+  {
+    "query": {
+      "match": {
+        "mobile": "12345678"
+      }
+    }
+  }
+
+
+  # null 搜索
+PUT user2
+  {
+    "mappings": {
+      "properties": {
+        "firstName":{
+          "type": "text",
+          "copy_to": "fullName"
+        },
+        "lastName":{
+          "type": "text",
+          "copy_to": "fullName"
+        },
+        "mobile":{
+          "type": "keyword",
+          "null_value": "NULL"
+        }
+      }
+    }
+  }
+
+  PUT user2/_doc/1
+  {
+    "firstName":"Chan",
+    "lastName": "jackie",
+    "mobile": null
+  }
+
+  # 查询值为 null
+  GET user2/_search
+  {
+    "query": {
+      "match": {
+        "mobile": "NULL"
+      }
+    }
+  }

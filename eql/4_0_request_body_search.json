@@ -1,0 +1,118 @@
+# 使用_bulk批量插入文档,初始化数据
+POST _bulk
+{ "index" : { "_index" : "student", "_id" : "1" } }
+{ "name" : "张三" }
+{ "index" : { "_index" : "student", "_id" : "2" } }
+{ "name" : "李四", "age": 10 , "desc":"student li si"}
+{ "index" : { "_index" : "student", "_id" : "3" } }
+{ "name" : "王 五", "age": 11, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "4" } }
+{ "name" : "q", "age": 11 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "5" } }
+{ "name" : "wang", "age": 0 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "6" } }
+{ "name" : "wang tiaaaan", "age": 11, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "7" } }
+{ "name" : "tiaaaan", "age": 11, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "8" } }
+{ "name" : "wangtian", "age": 11, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "10" } }
+{ "name" : "wangwang1", "age": 11 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "11" } }
+{ "name" : "wangwang2", "age": 9 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "12" } }
+{ "name" : "wangwang3", "age": 8 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "13" } }
+{ "name" : "wangwang4", "age": 7 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "14" } }
+{ "name" : "wang zhang tian", "age": 7, "desc":"student wang" }
+{ "index" : { "_index" : "student", "_id" : "15" } }
+{ "name" : "wang zhang li tian", "age": 7 , "desc":"student wang"}
+{ "index" : { "_index" : "student", "_id" : "15" } }
+{ "name" : "tian li zhang wang", "age": 7 , "height": 11 ,"desc":"student wang"}
+# source filtering
+# from size 分页
+POST /student/_search
+{
+  "sort":[{"age": "desc"}],
+  "_source": ["age"], 
+  "from": 0,  
+  "size": 15, 
+  "query":{
+    "match_all": {}
+  }
+}
+
+# 脚本字段, doc数组不支持字符串
+POST /student/_search
+{
+  "sort":[{"age": "desc"}],
+  "_source": ["age"], 
+  "from": 0,  
+  "size": 4, 
+  "script_fields": {
+    "description": {
+      "script": {
+        "lang": "painless"
+        , "source": "doc['age'].value +' hello'"
+      }
+    }
+  }, 
+  "query":{
+    "match_all": {}
+  }
+}
+
+
+# 使用查询表达式 match 默认 or
+POST /student/_search
+{
+  "sort":[{"age": "desc"}],
+  "from": 0,  
+  "size": 4, 
+  "_source": ["age", "name"], 
+  "query":{
+    "match": {
+      "name": "wang tian"
+    }
+  }
+}
+
+
+# 使用查询表达式 match oprator
+POST /student/_search
+{
+  "sort":[{"age": "desc"}],
+  "from": 0,  
+  "size": 4, 
+  "_source": ["age", "name"], 
+  "query":{
+    "match": {
+      "name": {
+        "query": "wang tian",
+        "operator": "and"
+      }
+      
+    }
+  }
+}
+
+
+# 短语搜索使用查询表达式 match_phrase（引入位置信息） slop
+# match_phrase 按照顺序出现 
+POST /student/_search
+{
+  "sort":[{"age": "desc"}],
+  "from": 0,  
+  "size": 4, 
+  "_source": ["age", "name"], 
+  "query":{
+    "match_phrase": {
+      "name": {
+        "query": "wang tian",
+        "slop": 1
+      }
+      
+    }
+  }
+}

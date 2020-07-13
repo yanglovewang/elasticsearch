@@ -41,3 +41,18 @@ GET dynamic_mapping_test/_search
   }
 }
 
+# 查询索引找不到新增加字段
+GET dynamic_mapping_test/_mapping
+
+# 设置动态为strict
+PUT dynamic_mapping_test/_mapping
+{
+  "dynamic": "strict"
+}
+
+# 设置动态为strict 不允许插入字段
+PUT dynamic_mapping_test/_doc/10
+{
+  "other2":"value"
+}
+

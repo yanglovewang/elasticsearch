@@ -1,4 +1,5 @@
 # 对索引进行 bulk 批量操作
+# delete 单条报错其他不会干扰
 POST _bulk
 { "index" : { "_index" : "test", "_type" : "_doc", "_id" : "1" } }
 { "field1" : "value1" }
@@ -8,4 +9,31 @@ POST _bulk
 { "update" : {"_id" : "1", "_type" : "_doc", "_index" : "test"} }
 { "doc" : {"field2" : "value2"} }
 
-GET test
+# 批量读取 必须指定id
+GET _mget
+{
+  "docs": [
+    {
+      "_index": "test",
+      "_id": "1"
+    },
+    {
+      "_index": "test",
+      "_id": "2"
+    }
+    ]
+}
+
+GET _mget
+{
+  "docs": [
+    {
+      "_index": "test",
+      "_id": "1"
+    }
+    ]
+}
+
+# 删除索引,避免干扰
+DELETE test
+
